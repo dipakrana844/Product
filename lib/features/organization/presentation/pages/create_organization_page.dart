@@ -16,7 +16,7 @@ import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/domain/entities/user.dart' as auth_user;
 
 class CreateOrganizationPage extends StatefulWidget {
-  final Organization? organization; // If provided, we are updating
+  final Organization? organization; 
 
   const CreateOrganizationPage({super.key, this.organization});
 
@@ -53,7 +53,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
     }
 
     if (widget.organization != null) {
-      // Update mode
+      
 
       _emailController = TextEditingController(
         text: widget.organization!.email ?? '',
@@ -66,14 +66,14 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
       );
       _selectedTeamSize = _mapIntToTeamSize(widget.organization!.team_size);
     } else {
-      // Create mode
+      
 
       _emailController = TextEditingController(text: currentUser?.email ?? '');
       _phoneController = TextEditingController(
         text: currentUser?.phone.value ?? '',
       );
       _orgNameController = TextEditingController(text: '');
-      _selectedTeamSize = _teamSizes[0]; // Or pick a default
+      _selectedTeamSize = _teamSizes[0]; 
     }
   }
 
@@ -104,7 +104,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF1A233A), // Dark Navy
+              Color(0xFF1A233A), 
               Color(0xFF2D3B5A),
             ],
           ),
@@ -112,7 +112,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Main content centered
+              
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24.0),
@@ -316,7 +316,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
   }
 
   void _onSave({bool useAuthBloc = false}) {
-    // Basic validation
+    
     if (_orgNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -329,10 +329,10 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
     final teamSizeInt = _parseTeamSize(_selectedTeamSize);
 
     if (widget.organization == null) {
-      // Logic for new organization
+      
       final authState = context.read<AuthBloc>().state;
 
-      // If useAuthBloc is forced or if auth state indicates onboarding is needed
+      
       if (useAuthBloc || authState is OrgCreationRequired) {
         final Map<String, dynamic> orgData = {
           'organization': {
@@ -365,8 +365,8 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
         context.read<OrganizationBloc>().add(CreateOrganizationRequested(org));
       }
     } else {
-      // Update existing
-      // Use copyWith to ensure we don't lose data for fields not in this form
+      
+      
       final phone = _phoneController.text.trim().isNotEmpty
           ? PhoneNumber.tryCreate(_phoneController.text.trim())
           : null;
@@ -396,7 +396,7 @@ class _CreateOrganizationPageState extends State<CreateOrganizationPage> {
     if (size == '11 to 25') return 25;
     if (size == '25 to 30') return 30;
     if (size == '31 to 50') return 50;
-    if (size == '50+') return 100; // Return a value indicating 50+
-    return 10; // Default
+    if (size == '50+') return 100; 
+    return 10; 
   }
 }
