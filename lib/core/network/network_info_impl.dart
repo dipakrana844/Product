@@ -1,52 +1,34 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 import 'network_info.dart';
 
 class NetworkInfoImpl implements NetworkInfo {
   final Connectivity _connectivity;
+  final InternetConnection _internetConnection;
 
-  NetworkInfoImpl(this._connectivity);
+  NetworkInfoImpl(this._connectivity, this._internetConnection);
 
-  Stream<bool>? _connectionStream;
-  
   @override
   Stream<bool> get connectionStream {
-    return _connectionStream ??= _connectivity.onConnectivityChanged
-        .asyncMap((List<ConnectivityResult> result) async {
-          if (result.isEmpty || result.contains(ConnectivityResult.none)) {
-            return false;
-          }
-          // Check if we have actual internet access
-          return await _checkInternetConnection(result);
-        })
+    // Combine connectivity changes with internet status for maximum robustness
+    return _internetConnection.onStatusChange
+        .map((status) => status == InternetStatus.connected)
         .distinct()
         .asBroadcastStream();
   }
 
   @override
   Future<bool> get isConnected async {
-    final result = await _connectivity.checkConnectivity();
-    if (result.contains(ConnectivityResult.none)) {
-      return false;
-    }
-    return await _checkInternetConnection(result);
-  }
-
-  Future<bool> _checkInternetConnection(List<ConnectivityResult> result) async {
-    // First check if there's a network connection at all
-    if (result.contains(ConnectivityResult.none)) {
+    // First check basic connectivity
+    final connectivityResult = await _connectivity.checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       return false;
     }
 
-    // Then verify internet access by pinging a reliable host
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
+    // Then check for actual internet access
+    return await _internetConnection.hasInternetAccess;
   }
 }

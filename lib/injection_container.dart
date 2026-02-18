@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 import 'core/navigation/app_router.dart';
 import 'core/navigation/navigation_service.dart';
@@ -119,12 +120,9 @@ Future<void> init() async {
 
   //! Network
   sl.registerLazySingleton(() => Connectivity());
-  sl.registerLazySingleton<NetworkInfo>(
-    () => NetworkInfoImpl(sl()),
-  );
-  sl.registerFactory(
-    () => NetworkCubit(sl<NetworkInfo>()),
-  );
+  sl.registerLazySingleton(() => InternetConnection());
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl(), sl()));
+  sl.registerLazySingleton(() => NetworkCubit(sl<NetworkInfo>()));
 
   //! External
   sl.registerLazySingleton(() => DioFactory.create(sl()));

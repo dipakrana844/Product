@@ -36,12 +36,12 @@ class _NetworkAwareWidgetState extends State<NetworkAwareWidget> {
         }
       },
       builder: (context, state) {
-        bool isOnline = state is NetworkConnected;
+        bool isOffline = state is NetworkDisconnected;
 
         return Stack(
           children: [
             widget.child,
-            if (!isOnline && widget.showOfflineIndicator)
+            if (isOffline && widget.showOfflineIndicator)
               Positioned(
                 top: 0,
                 left: 0,

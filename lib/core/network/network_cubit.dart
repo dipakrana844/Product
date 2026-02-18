@@ -10,6 +10,7 @@ class NetworkCubit extends Cubit<NetworkState> {
 
   NetworkCubit(this._networkInfo) : super(NetworkInitial()) {
     _listenToConnectivityChanges();
+    checkConnection();
   }
 
   void _listenToConnectivityChanges() {

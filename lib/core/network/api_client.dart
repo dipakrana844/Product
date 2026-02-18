@@ -107,7 +107,7 @@ class ApiClient {
             message ??= data['error']?.toString();
             message ??= data['msg']?.toString();
 
-            final Map? responseMap = data is Map ? data : null;
+            final Map? responseMap = data;
             final String responseString =
                 data?.toString() ?? error.response?.toString() ?? '';
 

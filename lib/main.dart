@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
           create: (context) => di.sl<OrganizationBloc>(),
         ),
       ],
-      child: BlocProvider.value(
-        value: di.sl<NetworkCubit>(),
+      child: BlocProvider<NetworkCubit>(
+        create: (context) => di.sl<NetworkCubit>(),
         child: MaterialApp.router(
           title: AppStrings.appName,
           theme: AppTheme.lightTheme,
